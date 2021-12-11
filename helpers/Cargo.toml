@@ -6,3 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+femtovg = "0.2.8"
+glutin = "0.28.0"
+winit = "0.26.0"

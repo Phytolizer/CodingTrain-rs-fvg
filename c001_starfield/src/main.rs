@@ -1,37 +1,23 @@
 use std::time::Duration;
 use std::time::Instant;
 
-use femtovg::renderer::OpenGl;
 use femtovg::Canvas;
 use femtovg::Color;
+use glutin::dpi::LogicalSize;
 use glutin::event::Event;
 use glutin::event::WindowEvent;
 use glutin::event_loop::ControlFlow;
-use glutin::ContextBuilder;
+use helpers::graphics::create_renderer_and_context;
 use star::Star;
 use winit::event_loop::EventLoop;
-use winit::window::WindowBuilder;
 
 mod star;
 
 fn main() {
     let event_loop = EventLoop::new();
 
-    let (renderer, windowed_context) = {
-        let wb = WindowBuilder::new()
-            .with_title("Starfield")
-            .with_inner_size(winit::dpi::LogicalSize::<f64>::new(800.0, 800.0));
-        let windowed_context = ContextBuilder::new()
-            .with_vsync(true)
-            .build_windowed(wb, &event_loop)
-            .unwrap();
-        let windowed_context = unsafe { windowed_context.make_current().unwrap() };
-
-        let renderer = OpenGl::new(|f| windowed_context.get_proc_address(f))
-            .expect("Failed to create renderer");
-
-        (renderer, windowed_context)
-    };
+    let (renderer, windowed_context) =
+        create_renderer_and_context(&event_loop, "Starfield", LogicalSize::new(800.0, 800.0));
 
     let mut canvas = Canvas::new(renderer).expect("Failed to create canvas");
 

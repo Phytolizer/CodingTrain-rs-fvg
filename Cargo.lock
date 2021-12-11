@@ -467,6 +467,11 @@ dependencies = [
 [[package]]
 name = "helpers"
 version = "0.1.0"
+dependencies = [
+ "femtovg",
+ "glutin",
+ "winit",
+]
 
 [[package]]
 name = "ident_case"
