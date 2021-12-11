@@ -1,2 +1,2 @@
 [workspace]
-members = ["helpers", "c001_starfield"]
+members = ["helpers", "c001_starfield", "c005_space_invaders"]

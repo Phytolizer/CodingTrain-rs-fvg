@@ -68,6 +68,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "c005_space_invaders"
+version = "0.1.0"
+dependencies = [
+ "femtovg",
+ "glutin",
+ "winit",
+]
+
+[[package]]
 name = "calloop"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
