@@ -62,17 +62,5 @@ impl Star {
         let mut path = Path::new();
         path.circle(sx as f32, sy as f32, r as f32);
         canvas.fill_path(&mut path, bg);
-
-        let px = map(self.x / self.pz, 0.0, 1.0, 0.0, inner_size.width as f64)
-            + (inner_size.width as f64) / 2.0;
-        let py = map(self.y / self.pz, 0.0, 1.0, 0.0, inner_size.height as f64)
-            + (inner_size.height as f64) / 2.0;
-
-        let mut paint = Paint::color(Color::rgb(0, 0, 0));
-        paint.set_line_width(1.0);
-        let mut path = Path::new();
-        path.move_to(sx as f32, sy as f32);
-        path.line_to(px as f32, py as f32);
-        canvas.stroke_path(&mut path, paint);
     }
 }
