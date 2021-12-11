@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 femtovg = "0.2.8"
 glutin = "0.28.0"
+helpers = { path = "../helpers" }
 winit = "0.26.0"

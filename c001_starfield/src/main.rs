@@ -45,12 +45,12 @@ fn main() {
                 _ => {}
             },
             Event::RedrawRequested(_) => {
-                let dpi_factor = window.scale_factor();
-                let size = window.inner_size();
-
                 for star in stars.iter_mut() {
                     star.update(window, delta);
                 }
+
+                let dpi_factor = window.scale_factor();
+                let size = window.inner_size();
 
                 canvas.set_size(size.width, size.height, dpi_factor as f32);
                 canvas.clear_rect(0, 0, size.width, size.height, Color::rgb(0, 0, 0));
