@@ -1,3 +1,4 @@
+use std::f64::consts::PI;
 use std::time::Duration;
 
 use femtovg::Canvas;
@@ -40,10 +41,14 @@ impl Ship {
     pub(crate) fn draw<R: Renderer>(&self, window: &Window, canvas: &mut Canvas<R>) {
         let paint = Paint::color(Color::rgb(255, 255, 255));
         let mut path = Path::new();
+        const SIDE_LENGTH: f64 = 100.0;
         let bottom = window.inner_size().height as f64;
-        path.move_to((self.x - 50.0) as f32, bottom as f32);
-        path.line_to((self.x + 50.0) as f32, bottom as f32);
-        path.line_to((self.x) as f32, bottom as f32 - 80.0);
+        path.move_to((self.x - SIDE_LENGTH / 2.0) as f32, bottom as f32);
+        path.line_to((self.x + SIDE_LENGTH / 2.0) as f32, bottom as f32);
+        path.line_to(
+            self.x as f32,
+            bottom as f32 - ((60.0 * PI / 180.0).tan() * SIDE_LENGTH / 2.0) as f32,
+        );
         path.close();
         canvas.fill_path(&mut path, paint);
     }

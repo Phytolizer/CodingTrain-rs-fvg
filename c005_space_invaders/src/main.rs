@@ -11,9 +11,14 @@ use glutin::event::WindowEvent;
 use glutin::event_loop::ControlFlow;
 use glutin::event_loop::EventLoop;
 use helpers::graphics::create_renderer_and_context;
+use invader::Invader;
 use ship::Ship;
 
+mod invader;
 mod ship;
+
+const INVADER_SPACING: f64 = 80.0;
+const INVADER_OFFSET: f64 = 50.0;
 
 fn main() {
     let event_loop = EventLoop::new();
@@ -25,6 +30,9 @@ fn main() {
     let mut canvas = Canvas::new(renderer).expect("Failed to create canvas");
 
     let mut ship = Ship::new(windowed_context.window());
+    let mut invaders = (0..8)
+        .map(|i| Invader::new(i as f64 * INVADER_SPACING + INVADER_OFFSET, INVADER_OFFSET))
+        .collect::<Vec<_>>();
 
     let mut frame_start = Instant::now();
     let mut dt = Duration::from_secs(0);
@@ -78,6 +86,11 @@ fn main() {
 
                 ship.update(window, dt);
                 ship.draw(window, &mut canvas);
+
+                for invader in invaders.iter_mut() {
+                    invader.update(dt);
+                    invader.show(&mut canvas);
+                }
 
                 canvas.flush();
                 windowed_context.swap_buffers().unwrap();
