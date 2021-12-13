@@ -44,6 +44,24 @@
         {
             "type": "lldb",
             "request": "launch",
+            "name": "Debug executable 'c005_space_invaders'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=c005_space_invaders",
+                    "--package=c005_space_invaders"
+                ],
+                "filter": {
+                    "name": "c005_space_invaders",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
             "name": "Debug unit tests in executable 'c001_starfield'",
             "cargo": {
                 "args": [

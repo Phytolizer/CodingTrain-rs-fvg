@@ -3,6 +3,8 @@ use std::time::Instant;
 
 use femtovg::Canvas;
 use femtovg::Color;
+use femtovg::ImageFlags;
+use femtovg::ImageSource;
 use glutin::dpi::LogicalSize;
 use glutin::event::ElementState;
 use glutin::event::Event;
@@ -11,7 +13,13 @@ use glutin::event::WindowEvent;
 use glutin::event_loop::ControlFlow;
 use glutin::event_loop::EventLoop;
 use helpers::graphics::create_renderer_and_context;
+use imgref::Img;
 use invader::Invader;
+use itertools::Itertools;
+use png::ColorType;
+use resource::resource;
+use rgb::RGB;
+use rgb::RGBA;
 use ship::Ship;
 
 mod invader;
@@ -21,6 +29,12 @@ const INVADER_SPACING: f64 = 80.0;
 const INVADER_OFFSET: f64 = 50.0;
 
 fn main() {
+    let spritesheet_png = resource!("assets/spritesheet.png");
+    let mut spritesheet_reader = png::Decoder::new(&*spritesheet_png).read_info().unwrap();
+    let mut spritesheet_buf = vec![0; spritesheet_reader.output_buffer_size()];
+    let spritesheet_info = spritesheet_reader.next_frame(&mut spritesheet_buf).unwrap();
+    let (spritesheet_width, spritesheet_height) = (spritesheet_info.width, spritesheet_info.height);
+    let spritesheet = &spritesheet_buf[..spritesheet_info.buffer_size()];
     let event_loop = EventLoop::new();
     let (renderer, windowed_context) = create_renderer_and_context(
         &event_loop,
@@ -28,6 +42,56 @@ fn main() {
         LogicalSize::new(800.0, 600.0),
     );
     let mut canvas = Canvas::new(renderer).expect("Failed to create canvas");
+    let spritesheet_img = match spritesheet_info.color_type {
+        ColorType::Rgba => {
+            let spritesheet_formatted = spritesheet
+                .iter()
+                .chunks(4)
+                .into_iter()
+                .map(|mut chunk| {
+                    let r = *chunk.next().unwrap();
+                    let g = *chunk.next().unwrap();
+                    let b = *chunk.next().unwrap();
+                    let a = *chunk.next().unwrap();
+                    RGBA { r, g, b, a }
+                })
+                .collect::<Vec<_>>();
+            canvas
+                .create_image(
+                    ImageSource::Rgba(Img::new(
+                        &spritesheet_formatted,
+                        spritesheet_width as usize,
+                        spritesheet_height as usize,
+                    )),
+                    ImageFlags::NEAREST,
+                )
+                .unwrap()
+        }
+        ColorType::Rgb => {
+            let spritesheet_formatted = spritesheet
+                .iter()
+                .chunks(3)
+                .into_iter()
+                .map(|mut chunk| {
+                    let r = *chunk.next().unwrap();
+                    let g = *chunk.next().unwrap();
+                    let b = *chunk.next().unwrap();
+                    RGB { r, g, b }
+                })
+                .collect::<Vec<_>>();
+            canvas
+                .create_image(
+                    ImageSource::Rgb(Img::new(
+                        &spritesheet_formatted,
+                        spritesheet_width as usize,
+                        spritesheet_height as usize,
+                    )),
+                    ImageFlags::NEAREST,
+                )
+                .unwrap()
+        }
+        _ => unimplemented!(),
+    };
 
     let mut ship = Ship::new(windowed_context.window());
     let mut invaders = (0..8)
